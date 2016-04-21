@@ -37,7 +37,6 @@ class ImageCollectionViewController: UICollectionViewController {
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
 
@@ -48,9 +47,9 @@ class ImageCollectionViewController: UICollectionViewController {
         if let indexPath = self.collectionView?.indexPathForCell((sender as? UICollectionViewCell)!) {
             if segue.identifier == "galleryImageView" {
                 if let cell: ImageCollectionViewCell = sender as? ImageCollectionViewCell, let destinationViewController: GalleryViewController = segue.destinationViewController as? GalleryViewController {
-                    destinationViewController.imageToDisplay = cell.imageView.image
-                    destinationViewController.imageLoc = indexPath.item
-                    destinationViewController.imageCount = images.count
+                    destinationViewController.index = indexPath.item
+                    destinationViewController.networkController = networkController
+                    destinationViewController.images = images
                 }
             }
         }

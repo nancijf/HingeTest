@@ -67,7 +67,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="V5l-mG-Jkz">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V5l-mG-Jkz">
                                 <rect key="frame" x="0.0" y="33" width="600" height="535"/>
                             </imageView>
                         </subviews>
@@ -79,6 +79,8 @@
                             <constraint firstItem="ocL-yu-msL" firstAttribute="top" secondItem="V5l-mG-Jkz" secondAttribute="bottom" constant="32" id="cOy-e8-wyb"/>
                         </constraints>
                     </view>
+                    <toolbarItems/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="imageView" destination="V5l-mG-Jkz" id="PCR-Fx-ctS"/>
                     </connections>

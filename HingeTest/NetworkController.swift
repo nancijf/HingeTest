@@ -165,6 +165,20 @@ class NetworkController: NSObject {
         return nil
     }
     
+    func deleteImageObject(imageObj: Images? = nil) {
+        if let imageEntity = imageObj {
+            self.managedObjectContext?.deleteObject(imageEntity)
+            
+            // Save the context.
+            do {
+                try self.managedObjectContext?.save()
+                
+            } catch {
+                abort()
+            }
+        }
+    }
+    
     func fetchedResultsController(entityName: String, sortDescriptors: [NSSortDescriptor]? = nil, predicate: NSPredicate? = nil) -> NSFetchedResultsController? {
         
         var fetchedResultsController: NSFetchedResultsController?
