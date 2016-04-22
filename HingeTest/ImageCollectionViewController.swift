@@ -17,7 +17,20 @@ class ImageCollectionViewController: UICollectionViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        loadData()
+    }
 
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+    }
+    
+    func loadData() {
         networkController?.loadImageData({ (images) in
             print("isMainThread: \(NSThread.isMainThread())")
             if NSThread.isMainThread() {
@@ -34,12 +47,6 @@ class ImageCollectionViewController: UICollectionViewController {
                 print(error)
         })
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-    
-
 
     // MARK: - Navigation
 

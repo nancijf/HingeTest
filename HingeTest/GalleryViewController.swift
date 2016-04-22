@@ -14,7 +14,23 @@ class GalleryViewController: UIViewController {
     var images = [Images]()
     var networkController: NetworkController?
     var timer = NSTimer()
-
+    var removeBarButton: UIBarButtonItem?
+    
+    lazy var pauseLabel: UILabel = {
+        let frame = UIApplication.sharedApplication().keyWindow?.frame
+        let labelRect = CGRect(x: 10, y: 80, width: (frame?.width)! - 20, height: 44)
+        let pauseLabel = UILabel(frame: labelRect)
+        pauseLabel.layer.cornerRadius = 15
+        pauseLabel.clipsToBounds = true
+        pauseLabel.textAlignment = .Center
+        pauseLabel.backgroundColor = UIColor ( red: 0.8129, green: 0.8129, blue: 0.8129, alpha: 0.8 )
+        pauseLabel.text = "Tap to pause and enable delete."
+        pauseLabel.alpha = 0
+        
+        return pauseLabel
+    }()
+    
+    var animationPaused: Bool = false
 
     @IBOutlet weak var imageView: UIImageView!
     
@@ -25,24 +41,57 @@ class GalleryViewController: UIViewController {
         self.imageView.alpha = 0
         self.imageView.image = images[index].image
 
-        let removeBarButton = UIBarButtonItem(title: "Delete", style: .Plain, target: self, action: #selector(deleteTapped))
+        removeBarButton = UIBarButtonItem(title: "Delete", style: .Plain, target: self, action: #selector(deleteTapped))
+        removeBarButton?.enabled = false
+        removeBarButton?.tintColor = UIColor.lightGrayColor()
         self.navigationItem.rightBarButtonItem = removeBarButton
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(pauseAnimation))
+        tapGesture.numberOfTapsRequired = 1
+        view.addGestureRecognizer(tapGesture)
+        
+        self.view.addSubview(pauseLabel)
      }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         fadeInOut()
         timer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: #selector(fadeInOut), userInfo: nil, repeats: true)
+        UIView.animateWithDuration(0.5, animations: { 
+            self.pauseLabel.alpha = 1
+            }) { (done) in
+                UIView.animateWithDuration(0.5, delay: 2, options: [.CurveEaseInOut], animations: { 
+                    self.pauseLabel.alpha = 0
+                    }, completion: nil)
+        }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
+    func pauseAnimation(sender: UITapGestureRecognizer) {
+        if !animationPaused {
+            timer.invalidate()
+            removeBarButton?.tintColor = UIColor.blackColor()
+            removeBarButton!.enabled = true
+            animationPaused = true
+        } else {
+            removeBarButton?.tintColor = UIColor.lightGrayColor()
+            removeBarButton!.enabled = false
+            animationPaused = false
+            timer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: #selector(fadeInOut), userInfo: nil, repeats: true)
+        }
+    }
+    
     func deleteTapped(sender: UIBarButtonItem) {
-        print("delete button tapped")
         networkController?.deleteImageObject(images[index])
         images.removeAtIndex(index)
+        index -= 1
+        if index < 0 {
+            index = images.count - 1
+        }
+        fadeInOut()
     }
     
     func getNextImage() -> Images {
