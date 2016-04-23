@@ -62,17 +62,22 @@ class GalleryViewController: UIViewController {
         super.viewDidAppear(animated)
         fadeInOut()
         timer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: #selector(fadeInOut), userInfo: nil, repeats: true)
-        UIView.animateWithDuration(0.5, animations: { 
-            self.pauseLabel.alpha = 1
-            }) { (done) in
-                UIView.animateWithDuration(0.5, delay: 2, options: [.CurveEaseInOut], animations: { 
-                    self.pauseLabel.alpha = 0
-                    }, completion: nil)
-        }
+        showPauseHint("Tap to pause and enable delete.")
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+    
+    func showPauseHint(message: String) {
+        pauseLabel.text = message
+        UIView.animateWithDuration(0.5, animations: {
+            self.pauseLabel.alpha = 1
+        }) { (done) in
+            UIView.animateWithDuration(0.5, delay: 1, options: [.CurveEaseInOut], animations: {
+                self.pauseLabel.alpha = 0
+                }, completion: nil)
+        }
     }
     
     func pauseAnimation(sender: UITapGestureRecognizer) {
@@ -81,6 +86,7 @@ class GalleryViewController: UIViewController {
             removeBarButton?.tintColor = UIColor.blackColor()
             removeBarButton!.enabled = true
             animationPaused = true
+            showPauseHint("Tap to continue.")
         } else {
             removeBarButton?.tintColor = UIColor.lightGrayColor()
             removeBarButton!.enabled = false

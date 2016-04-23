@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B804DFEE1CC6FAC60014BC9E /* NetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B804DFED1CC6FAC60014BC9E /* NetworkController.swift */; };
+		B815A9521CCB9AF300F6F8D7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B815A9511CCB9AF300F6F8D7 /* Constants.swift */; };
 		B86967681CC86082006A2CEA /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86967671CC86082006A2CEA /* GalleryViewController.swift */; };
 		B88031F71CC5B44C00946861 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B88031F61CC5B44C00946861 /* AppDelegate.swift */; };
 		B88031FC1CC5B44C00946861 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B88031FA1CC5B44C00946861 /* Main.storyboard */; };
@@ -33,6 +34,7 @@
 
 /* Begin PBXFileReference section */
 		B804DFED1CC6FAC60014BC9E /* NetworkController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkController.swift; sourceTree = "<group>"; };
+		B815A9511CCB9AF300F6F8D7 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B86967671CC86082006A2CEA /* GalleryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
 		B88031F31CC5B44B00946861 /* HingeTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HingeTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B88031F61CC5B44C00946861 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 				B804DFED1CC6FAC60014BC9E /* NetworkController.swift */,
 				B88031FA1CC5B44C00946861 /* Main.storyboard */,
 				B889E29C1CCA72F40041BC12 /* Reachability.swift */,
+				B815A9511CCB9AF300F6F8D7 /* Constants.swift */,
 				B88032001CC5B44C00946861 /* Assets.xcassets */,
 				B88032021CC5B44C00946861 /* LaunchScreen.storyboard */,
 				B88032051CC5B44C00946861 /* Info.plist */,
@@ -224,6 +227,7 @@
 				B86967681CC86082006A2CEA /* GalleryViewController.swift in Sources */,
 				B804DFEE1CC6FAC60014BC9E /* NetworkController.swift in Sources */,
 				B88031F71CC5B44C00946861 /* AppDelegate.swift in Sources */,
+				B815A9521CCB9AF300F6F8D7 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

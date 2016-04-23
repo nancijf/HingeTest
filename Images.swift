@@ -12,6 +12,10 @@ import CoreData
 
 class Images: NSManagedObject {
 
-// Insert code here to add functionality to your managed object subclass
-
+    func setUpWithDictionary(dictionary: [String: String]) {
+        self.name = dictionary["imageName"]
+        self.imagedesc = dictionary["imageDescription"]
+        self.url = dictionary["imageURL"]
+    }
+    
 }

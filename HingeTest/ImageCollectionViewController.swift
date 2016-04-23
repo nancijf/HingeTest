@@ -22,7 +22,7 @@ class ImageCollectionViewController: UICollectionViewController, GalleryViewCont
         super.viewDidLoad()
         
         self.navigationItem.title = "Image Collection"
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(showNetworkAlert), name: "com.nancifrank.NetworkIsDown", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(showNetworkAlert), name: kNetworkDownNotificationName, object: nil)
         refreshControl.addTarget(self, action: #selector(refreshData), forControlEvents: .ValueChanged)
         self.collectionView!.addSubview(refreshControl)
         loadData()
@@ -56,13 +56,11 @@ class ImageCollectionViewController: UICollectionViewController, GalleryViewCont
     
     func loadData() {
         networkController?.loadImageData({ (images) in
-//            print("isMainThread: \(NSThread.isMainThread())")
             if NSThread.isMainThread() {
                 self.images = images
                 self.collectionView?.reloadData()
             } else {
                 dispatch_async(dispatch_get_main_queue(), {
-//                    print("in CollectionVC images: \(images)")
                     self.images = images
                     self.collectionView?.reloadData()
                 })
@@ -118,6 +116,10 @@ class ImageCollectionViewController: UICollectionViewController, GalleryViewCont
         return cell
     }
     
+    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        print("didSelectItemAtIndexPath")
+    }
+    
     // MARK: GalleryViewControllerDelegate
     
     func didDeleteImageInGalleryViewController(viewController: GalleryViewController, atIndex: Int) {
@@ -137,10 +139,12 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    var isLoading: Bool = false
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateThumbImage), name: "thumbnailUpdateAvailable", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateThumbImage), name: kThumbnalLoadedNotificationName, object: nil)
     }
     
     override func awakeFromNib() {
