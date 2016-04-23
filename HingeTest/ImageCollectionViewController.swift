@@ -103,21 +103,40 @@ class ImageCollectionViewController: UICollectionViewController, GalleryViewCont
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(kReuseIdentifier, forIndexPath: indexPath) as! ImageCollectionViewCell
         
-    
-        // Configure the cell
         // tag the cell with indexPath.item
         cell.tag = indexPath.item
         
+        // Update cell with thumbnail when available
         if let thumb = self.images[indexPath.item].thumb {
             cell.activityIndicator.stopAnimating()
             cell.imageView.image = thumb
+        } else {
+            cell.imageView.image = UIImage(named: "ImageLoading")
+            cell.isLoading = true
         }
     
         return cell
     }
     
+    // alert user image still loading when tap on cell if not completed
+    func loadingAlert() {
+        let alert = UIAlertController(title: "Alert", message: "Slideshow unavailable. Image still loading...", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+        presentViewController(alert, animated: true, completion: { () -> Void in
+            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2 * Double(NSEC_PER_SEC)))
+            dispatch_after(delayTime, dispatch_get_main_queue()) {
+                alert.dismissViewControllerAnimated(true, completion: nil)
+            }
+        })
+    }
+    
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        print("didSelectItemAtIndexPath")
+        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! ImageCollectionViewCell
+        if cell.isLoading {
+            loadingAlert()
+        } else {
+            performSegueWithIdentifier("galleryImageView", sender: cell)
+        }
     }
     
     // MARK: GalleryViewControllerDelegate
@@ -148,15 +167,18 @@ class ImageCollectionViewCell: UICollectionViewCell {
     }
     
     override func awakeFromNib() {
+        self.activityIndicator.color = UIColor.blackColor()
         self.activityIndicator.startAnimating()
     }
     
+    // Run function when receive Notification image is finished downloading
     func updateThumbImage(notification: NSNotification) {
         if let userInfo = notification.userInfo as? [String: AnyObject], index = userInfo["index"] where index.integerValue == self.tag {
             if let image = notification.object as? UIImage {
                 dispatch_async(dispatch_get_main_queue(), {
-                    self.imageView.image = image
                     self.activityIndicator.stopAnimating()
+                    self.isLoading = false
+                    self.imageView.image = image
                 })
             }
         }
@@ -164,6 +186,8 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         imageView.image = nil
+        self.isLoading = false
+        self.activityIndicator.stopAnimating()
     }
     
 }

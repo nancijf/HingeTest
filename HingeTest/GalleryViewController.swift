@@ -113,6 +113,7 @@ class GalleryViewController: UIViewController {
             index = 0
         }
         self.navigationItem.title = String("\(index + 1)\\\(images.count)" )
+
         return images[index]
     }
     
@@ -123,7 +124,7 @@ class GalleryViewController: UIViewController {
             }) { (done) in
                 if !newAlpha {
                     let image = self.getNextImage().image
-                    self.imageView.image = image
+                    self.imageView.image = image ?? UIImage(named: "ImageLoading")
                     self.fadeInOut()
                 }
         }

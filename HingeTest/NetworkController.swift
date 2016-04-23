@@ -89,7 +89,7 @@ class NetworkController: NSObject {
             let session = NSURLSession.sharedSession()
             session.dataTaskWithURL(requestURL, completionHandler: {imageData, response, error -> Void in
                 if let httpResponse = response as? NSHTTPURLResponse {
-                    // Check that successfully received data - response code 200
+                    // Check that successfully received data: response code 200
                     if imageData?.length > 0 && httpResponse.statusCode == 200 {
                         var photoDict = [String: UIImage]()
                         if let photo: UIImage = UIImage(data: imageData!) {
@@ -206,7 +206,7 @@ class NetworkController: NSObject {
     
     func isConnectedToNetwork() -> Bool {
         guard let isReachable = self.reachability?.isReachable() else {
-//            print("self.reachability is nil")
+            // self.reachability is nil
             return false
         }
         
@@ -215,13 +215,11 @@ class NetworkController: NSObject {
     
     func setupReachability(hostName hostName: String?) {
         
-//        print("--- set up with host name: \(hostName!)")
-        
         do {
             let reachability = try hostName == nil ? Reachability.reachabilityForInternetConnection() : Reachability(hostname: hostName!)
             self.reachability = reachability
         } catch ReachabilityError.FailedToCreateWithAddress(_) {
-//            print("network connection is not available")
+            //  Network connection is not available
             self.isNetworkAvailable = false
             return
         } catch {}
@@ -231,7 +229,6 @@ class NetworkController: NSObject {
     }
     
     func startNotifier() {
-//        print("--- start notifier")
         do {
             try reachability?.startNotifier()
         } catch {
@@ -241,7 +238,6 @@ class NetworkController: NSObject {
     }
     
     func stopNotifier() {
-//        print("--- stop notifier")
         reachability?.stopNotifier()
         NSNotificationCenter.defaultCenter().removeObserver(self, name: ReachabilityChangedNotification, object: nil)
         reachability = nil

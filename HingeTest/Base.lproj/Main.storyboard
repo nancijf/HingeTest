@@ -12,6 +12,7 @@
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" id="6h2-6s-gOr">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="2" minimumInteritemSpacing="2" id="pDc-h8-dVL">
                             <size key="itemSize" width="108" height="108"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -29,13 +30,15 @@
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="IYy-2V-Ozw">
                                             <rect key="frame" x="0.0" y="0.0" width="108" height="108"/>
                                         </imageView>
-                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="Nts-eW-1f8">
-                                            <rect key="frame" x="36" y="35" width="37" height="37"/>
+                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="Nts-eW-1f8">
+                                            <rect key="frame" x="44" y="14" width="20" height="20"/>
                                         </activityIndicatorView>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <constraints>
+                                    <constraint firstItem="Nts-eW-1f8" firstAttribute="centerX" secondItem="2Bk-oH-rDA" secondAttribute="centerX" id="C8T-0f-qpa"/>
+                                    <constraint firstItem="Nts-eW-1f8" firstAttribute="centerY" secondItem="2Bk-oH-rDA" secondAttribute="centerY" constant="-30" id="F8J-CG-RgD"/>
                                     <constraint firstAttribute="trailing" secondItem="IYy-2V-Ozw" secondAttribute="trailing" id="Z49-2C-Kq7"/>
                                     <constraint firstItem="IYy-2V-Ozw" firstAttribute="leading" secondItem="2Bk-oH-rDA" secondAttribute="leading" id="f1m-yO-YhU"/>
                                     <constraint firstAttribute="bottom" secondItem="IYy-2V-Ozw" secondAttribute="bottom" id="lPU-jO-dZW"/>
@@ -44,7 +47,6 @@
                                 <connections>
                                     <outlet property="activityIndicator" destination="Nts-eW-1f8" id="Z50-iO-3Qz"/>
                                     <outlet property="imageView" destination="IYy-2V-Ozw" id="eRq-qk-8bt"/>
-                                    <segue destination="hB6-1b-x7G" kind="show" identifier="galleryImageView" id="NRm-Sf-P4T"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -54,6 +56,9 @@
                         </connections>
                     </collectionView>
                     <navigationItem key="navigationItem" id="VDt-wA-fOX"/>
+                    <connections>
+                        <segue destination="hB6-1b-x7G" kind="show" identifier="galleryImageView" id="Zs1-4P-R6P"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="URE-Zr-IAH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
