@@ -21,6 +21,7 @@ class GalleryViewController: UIViewController {
     var removeBarButton: UIBarButtonItem?
     var delegate: GalleryViewControllerDelegate?
     
+    // Show label for user to explain Pause and Delete images
     lazy var pauseLabel: UILabel = {
         let frame = UIApplication.sharedApplication().keyWindow?.frame
         let labelRect = CGRect(x: 10, y: 80, width: (frame?.width)! - 20, height: 44)
@@ -42,6 +43,7 @@ class GalleryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Set title to image number and counter
         self.navigationItem.title = String("\(index + 1)\\\(images.count)" )
         self.imageView.alpha = 0
         self.imageView.image = images[index].image
@@ -51,6 +53,7 @@ class GalleryViewController: UIViewController {
         removeBarButton?.tintColor = UIColor.lightGrayColor()
         self.navigationItem.rightBarButtonItem = removeBarButton
         
+        // Set up tap gesture for Pause/Delete
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(pauseAnimation))
         tapGesture.numberOfTapsRequired = 1
         view.addGestureRecognizer(tapGesture)
@@ -61,6 +64,7 @@ class GalleryViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         fadeInOut()
+        // Create timer for fading images
         timer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: #selector(fadeInOut), userInfo: nil, repeats: true)
         showPauseHint("Tap to pause and enable delete.")
     }
@@ -69,6 +73,11 @@ class GalleryViewController: UIViewController {
         super.didReceiveMemoryWarning()
     }
     
+    /**
+     Shows user Pause/Delete label
+     
+     - parameter message: text for label
+     */
     func showPauseHint(message: String) {
         pauseLabel.text = message
         UIView.animateWithDuration(0.5, animations: {
@@ -80,6 +89,11 @@ class GalleryViewController: UIViewController {
         }
     }
     
+    /**
+     User tapped screen: check to Pause/Start image animation
+     
+     - parameter sender: tap gesture
+     */
     func pauseAnimation(sender: UITapGestureRecognizer) {
         if !animationPaused {
             timer.invalidate()
@@ -95,11 +109,18 @@ class GalleryViewController: UIViewController {
         }
     }
     
+    /**
+     Delete image from image array and core data
+     
+     - parameter sender: button tapped
+     */
     func deleteTapped(sender: UIBarButtonItem) {
         self.delegate?.didDeleteImageInGalleryViewController(self, atIndex: index)
         let imageToDelete = images[index]
         images.removeAtIndex(index)
         networkController?.deleteImageObject(imageToDelete)
+        
+        // decrement index to account for deleted image and check if at beginning of array
         index -= 1
         if index < 0 {
             index = images.count - 1
@@ -107,8 +128,15 @@ class GalleryViewController: UIViewController {
         fadeInOut()
     }
     
+    /**
+     Get next image in array to fade in
+     
+     - returns: next image
+     */
     func getNextImage() -> Images {
         index += 1
+        
+        // If at end of array reset to start of array
         if index >= images.count {
             index = 0
         }
@@ -117,13 +145,18 @@ class GalleryViewController: UIViewController {
         return images[index]
     }
     
+    /**
+     Fade out current image and fade in next one by setting alpha to 1 or 0
+     */
     func fadeInOut() {
         let newAlpha = imageView.alpha == 0
         UIView.animateWithDuration(0.3, animations: {
             self.imageView.alpha = CGFloat(newAlpha)
             }) { (done) in
+                // if newAlpha is false then get the next image to fade in
                 if !newAlpha {
                     let image = self.getNextImage().image
+                    // if image not finished downloading then put in temp image
                     self.imageView.image = image ?? UIImage(named: "ImageLoading")
                     self.fadeInOut()
                 }

@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-
+// Set new Images object properties
 class Images: NSManagedObject {
 
     func setUpWithDictionary(dictionary: [String: String]) {

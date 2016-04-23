@@ -30,10 +30,16 @@ class NetworkController: NSObject {
         setupReachability(hostName: kHostname)
         startNotifier()
     }
+
+    /**
+     Check the DataStore. If no images returned do a network call to load data
+     
+     - parameter onSuccess: On success pass back array of images
+     - parameter onError:   Error block
+     */
     
     func loadImageData(onSuccess: SuccessBlock, onError: ErrorBlock) {
         
-        // Check the DataStore. If no images returned get data from the network
         let imageArray = loadImageDataFromDataStore()
         if imageArray.count == 0 {
             loadImageDataFromNetwork(onSuccess, onError: onError)
@@ -42,11 +48,15 @@ class NetworkController: NSObject {
             onSuccess(image: imageArray)
         }
     }
-    
+    /**
+     Make network call to load images from the network
+     
+     - parameter onSuccess: On Success returns array of Images objects
+     - parameter onError:   Error block
+     */
     func loadImageDataFromNetwork(onSuccess: SuccessBlock, onError: ErrorBlock) {
         var images = [Images]()
         
-        // Check for netowrk connection
         guard isNetworkAvailable else {
             NSNotificationCenter.defaultCenter().postNotificationName(kNetworkDownNotificationName, object: nil)
             return
@@ -58,11 +68,14 @@ class NetworkController: NSObject {
             do {
                 let jsonOptions: NSJSONReadingOptions = [.AllowFragments, .MutableLeaves, .MutableContainers]
                 let photoArray = try NSJSONSerialization.JSONObjectWithData(data!, options: jsonOptions) as? [[String: String]]
+                
+                // Parse JSON data
                 if let photos = photoArray {
                     for photo in photos {
                         if let imageObj = self.imageFromDictionary(photo) {
                             images.append(imageObj)
                             let index = images.indexOf(imageObj)
+                            //
                             self.load(imageObj, onCompletion: { (image, thumbnail) in
                                 imageObj.image = image
                                 imageObj.thumb = thumbnail
@@ -80,6 +93,12 @@ class NetworkController: NSObject {
         }).resume()
     }
     
+    /**
+     Takes Images Object and uses URL to get image, creates thumbnail of image and stores both in core data object
+     
+     - parameter image:        CoreData Images object
+     - parameter onCompletion: Passes back the downloaded image and scaled thumbnail
+     */
     func load(image: Images, onCompletion: ImageBlock) {
         
         guard let photoDict = self.imageCache.objectForKey(image.url!) as? [String: UIImage] else {
@@ -88,7 +107,6 @@ class NetworkController: NSObject {
             let session = NSURLSession.sharedSession()
             session.dataTaskWithURL(requestURL, completionHandler: {imageData, response, error -> Void in
                 if let httpResponse = response as? NSHTTPURLResponse {
-                    // Check that successfully received data: response code 200
                     if imageData?.length > 0 && httpResponse.statusCode == 200 {
                         var photoDict = [String: UIImage]()
                         if let photo: UIImage = UIImage(data: imageData!) {
@@ -111,6 +129,14 @@ class NetworkController: NSObject {
         onCompletion(image: photoDict[kImageKey], thumbnail: photoDict[kThumbKey])
     }
     
+    /**
+     Scale large image for tumbnail size
+     
+     - parameter photo:   Image to be scaled
+     - parameter maxSize: size to scale images
+     
+     - returns: scaled thumbnail
+     */
     func scaledImageFor(photo: UIImage, maxSize: CGFloat = 300) -> UIImage {
         let size = photo.size
         let maxEdge = max(size.height, size.width)
@@ -127,6 +153,11 @@ class NetworkController: NSObject {
         return newImage
     }
     
+    /**
+     Check CoreData for images
+     
+     - returns: returns Images objects fetched from CoreData
+     */
     func loadImageDataFromDataStore() -> [Images] {
         var images = [Images]()
         
@@ -139,6 +170,13 @@ class NetworkController: NSObject {
         return images
     }
     
+    /**
+     Create new Images entity and, properties in setUpWithDictionary() and save core data
+     
+     - parameter dictionary: dictionary template for the Images object
+     
+     - returns: return created Images Object or nil if fails
+     */
     func imageFromDictionary(dictionary: [String: String]) -> Images? {
         
         if let imageObj = NSEntityDescription.insertNewObjectForEntityForName("Images", inManagedObjectContext: self.managedObjectContext!) as? Images {
@@ -152,11 +190,17 @@ class NetworkController: NSObject {
         return nil
     }
     
+    // MARK: - Core Data
+    
+    /**
+     Delete single Images object or All objects from CoreData
+     
+     - parameter imageObj: <#imageObj description#>
+     */
     func deleteImageObject(imageObj: Images? = nil) {
         if let imageEntity = imageObj {
             self.managedObjectContext?.deleteObject(imageEntity)
             
-            // Save the context.
             saveCoreData()
         }
     }
@@ -203,7 +247,13 @@ class NetworkController: NSObject {
         return fetchedResultsController
     }
     
-    // MARK: - Reachability code to check for network connection
+    // MARK: - Reachability.swift
+    
+    /**
+     Functions to check for network connection using Reachability.swift by Ashley Mills
+     
+     - returns: returns Bool if network connection available
+     */
     
     func isConnectedToNetwork() -> Bool {
         guard let isReachable = self.reachability?.isReachable() else {

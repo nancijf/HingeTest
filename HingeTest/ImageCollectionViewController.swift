@@ -22,6 +22,8 @@ class ImageCollectionViewController: UICollectionViewController, GalleryViewCont
         super.viewDidLoad()
         
         self.navigationItem.title = "Image Collection"
+        
+        // Add Observer to listen for change in network availability
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(showNetworkAlert), name: kNetworkDownNotificationName, object: nil)
         refreshControl.addTarget(self, action: #selector(refreshData), forControlEvents: .ValueChanged)
         self.collectionView!.addSubview(refreshControl)
@@ -34,6 +36,11 @@ class ImageCollectionViewController: UICollectionViewController, GalleryViewCont
         collectionView?.reloadData()
     }
     
+    /**
+     Pull to refresh data in collectionview - deletes all objects in core data and loads new
+     
+     - parameter refreshControl: pull to refresh
+     */
     func refreshData(refreshControl: UIRefreshControl) {
         if let networkAvailable = networkController?.isNetworkAvailable where networkAvailable {
             self.images.removeAll()
@@ -50,14 +57,23 @@ class ImageCollectionViewController: UICollectionViewController, GalleryViewCont
         print("received memory warning")
     }
     
+    /**
+     Alert user there is no network connection
+     
+     - parameter notification: notification
+     */
     func showNetworkAlert(notification: NSNotification) {
         let alert = UIAlertController(title: "Alert", message: "Sorry. Network not available at this time.", preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
         presentViewController(alert, animated: true, completion: nil)
     }
     
+    /**
+     Get Image data from CoreData or Network
+     */
     func loadData() {
         networkController?.loadImageData({ (images) in
+            // Check if on main thread before trying to load images
             if NSThread.isMainThread() {
                 self.images = images
                 self.collectionView?.reloadData()
@@ -105,7 +121,6 @@ class ImageCollectionViewController: UICollectionViewController, GalleryViewCont
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(kReuseIdentifier, forIndexPath: indexPath) as! ImageCollectionViewCell
         
-        // tag the cell with indexPath.item
         cell.tag = indexPath.item
         
         // Update cell with thumbnail when available
@@ -121,7 +136,9 @@ class ImageCollectionViewController: UICollectionViewController, GalleryViewCont
         return cell
     }
     
-    // alert user image still loading when tap on cell if not completed
+    /**
+     alert user image still loading image when tap on cell if not completed
+     */
     func loadingAlert() {
         let alert = UIAlertController(title: "Alert", message: "Slideshow unavailable. Image still loading...", preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
@@ -142,8 +159,9 @@ class ImageCollectionViewController: UICollectionViewController, GalleryViewCont
         }
     }
     
-    // MARK: GalleryViewControllerDelegate
+    // MARK: - GalleryViewControllerDelegate
     
+    // Delete image from image array if was deleted in GalleryViewController
     func didDeleteImageInGalleryViewController(viewController: GalleryViewController, atIndex: Int) {
         images.removeAtIndex(atIndex)
         collectionView?.reloadData()
@@ -154,6 +172,8 @@ class ImageCollectionViewController: UICollectionViewController, GalleryViewCont
     }
     
 }
+
+    //
 
 class ImageCollectionViewCell: UICollectionViewCell {
     
@@ -166,6 +186,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
+        // Add Observer to listen for when thumbnail available
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateThumbImage), name: kThumbnalLoadedNotificationName, object: nil)
     }
     
