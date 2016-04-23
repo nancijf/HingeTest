@@ -9,7 +9,7 @@
         <scene sceneID="nTH-ht-XvT">
             <objects>
                 <collectionViewController id="VW7-4d-TAK" customClass="ImageCollectionViewController" customModule="HingeTest" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="6h2-6s-gOr">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" id="6h2-6s-gOr">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="2" minimumInteritemSpacing="2" id="pDc-h8-dVL">
@@ -29,6 +29,9 @@
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="IYy-2V-Ozw">
                                             <rect key="frame" x="0.0" y="0.0" width="108" height="108"/>
                                         </imageView>
+                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="Nts-eW-1f8">
+                                            <rect key="frame" x="36" y="35" width="37" height="37"/>
+                                        </activityIndicatorView>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
@@ -39,6 +42,7 @@
                                     <constraint firstItem="IYy-2V-Ozw" firstAttribute="top" secondItem="2Bk-oH-rDA" secondAttribute="top" id="s3u-yU-AHT"/>
                                 </constraints>
                                 <connections>
+                                    <outlet property="activityIndicator" destination="Nts-eW-1f8" id="Z50-iO-3Qz"/>
                                     <outlet property="imageView" destination="IYy-2V-Ozw" id="eRq-qk-8bt"/>
                                     <segue destination="hB6-1b-x7G" kind="show" identifier="galleryImageView" id="NRm-Sf-P4T"/>
                                 </connections>

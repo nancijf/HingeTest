@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol GalleryViewControllerDelegate {
+    func didDeleteImageInGalleryViewController(viewController: GalleryViewController, atIndex: Int)
+}
+
 class GalleryViewController: UIViewController {
     
     var index: Int = 0
@@ -15,6 +19,7 @@ class GalleryViewController: UIViewController {
     var networkController: NetworkController?
     var timer = NSTimer()
     var removeBarButton: UIBarButtonItem?
+    var delegate: GalleryViewControllerDelegate?
     
     lazy var pauseLabel: UILabel = {
         let frame = UIApplication.sharedApplication().keyWindow?.frame
@@ -85,8 +90,10 @@ class GalleryViewController: UIViewController {
     }
     
     func deleteTapped(sender: UIBarButtonItem) {
-        networkController?.deleteImageObject(images[index])
+        self.delegate?.didDeleteImageInGalleryViewController(self, atIndex: index)
+        let imageToDelete = images[index]
         images.removeAtIndex(index)
+        networkController?.deleteImageObject(imageToDelete)
         index -= 1
         if index < 0 {
             index = images.count - 1

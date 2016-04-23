@@ -2,4 +2,118 @@
 <Bucket
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HingeTest/ImageCollectionViewController.swift"
+            timestampString = "483065592.849126"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "33"
+            endingLineNumber = "33"
+            landmarkName = "viewWillAppear(_:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HingeTest/ImageCollectionViewController.swift"
+            timestampString = "483065592.849126"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
+            landmarkName = "loadData()"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HingeTest.ImageCollectionViewController.loadData () -&gt; ()"
+                  moduleName = "HingeTest"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nanci/Dropbox/iOS%20Dev/Hinge/HingeTest/HingeTest/ImageCollectionViewController.swift"
+                  timestampString = "483060499.669019"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "42"
+                  endingLineNumber = "42"
+                  offsetFromSymbolStart = "24">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HingeTest.ImageCollectionViewController.(loadData () -&gt; ()).(closure #1)"
+                  moduleName = "HingeTest"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nanci/Dropbox/iOS%20Dev/Hinge/HingeTest/HingeTest/ImageCollectionViewController.swift"
+                  timestampString = "483060499.669192"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "44"
+                  endingLineNumber = "44"
+                  offsetFromSymbolStart = "40">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HingeTest/ImageCollectionViewController.swift"
+            timestampString = "483066076.804836"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
+            landmarkName = "refreshData(_:)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HingeTest.ImageCollectionViewController.refreshData (__ObjC.UIRefreshControl) -&gt; ()"
+                  moduleName = "HingeTest"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nanci/Dropbox/iOS%20Dev/Hinge/HingeTest/HingeTest/ImageCollectionViewController.swift"
+                  timestampString = "483066076.856907"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "38"
+                  endingLineNumber = "38"
+                  offsetFromSymbolStart = "28">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HingeTest.ImageCollectionViewController.refreshData (__ObjC.UIRefreshControl) -&gt; ()"
+                  moduleName = "HingeTest"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nanci/Dropbox/iOS%20Dev/Hinge/HingeTest/HingeTest/ImageCollectionViewController.swift"
+                  timestampString = "483066076.857134"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "38"
+                  endingLineNumber = "38"
+                  offsetFromSymbolStart = "236">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

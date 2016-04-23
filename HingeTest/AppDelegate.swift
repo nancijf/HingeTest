@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         let networkController = NetworkController()
         networkController.managedObjectContext = self.managedObjectContext
+        networkController.myPersistentStoreCoordinator = self.persistentStoreCoordinator
         let navigationController = self.window!.rootViewController as! UINavigationController
         let collectionViewController = navigationController.topViewController as! ImageCollectionViewController
         collectionViewController.networkController = networkController

@@ -10,35 +10,59 @@ import UIKit
 
 private let kReuseIdentifier = "ImageCell"
 
-class ImageCollectionViewController: UICollectionViewController {
+class ImageCollectionViewController: UICollectionViewController, GalleryViewControllerDelegate {
     
     var images = [Images]()
     var networkController: NetworkController?
+    lazy var refreshControl: UIRefreshControl = {
+        return UIRefreshControl()
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationItem.title = "Image Collection"
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(showNetworkAlert), name: "com.nancifrank.NetworkIsDown", object: nil)
+        refreshControl.addTarget(self, action: #selector(refreshData), forControlEvents: .ValueChanged)
+        self.collectionView!.addSubview(refreshControl)
+        loadData()
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        loadData()
+        collectionView?.reloadData()
+    }
+    
+    func refreshData(refreshControl: UIRefreshControl) {
+        if let networkAvailable = networkController?.isNetworkAvailable where networkAvailable {
+            networkController?.deleteAllObjects()
+            loadData()
+        }
+        refreshControl.endRefreshing()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+        
+        print("received memory warning")
+    }
+    
+    func showNetworkAlert(notification: NSNotification) {
+        let alert = UIAlertController(title: "Alert", message: "Sorry. Network not available at this time.", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+        presentViewController(alert, animated: true, completion: nil)
     }
     
     func loadData() {
         networkController?.loadImageData({ (images) in
-            print("isMainThread: \(NSThread.isMainThread())")
+//            print("isMainThread: \(NSThread.isMainThread())")
             if NSThread.isMainThread() {
                 self.images = images
                 self.collectionView?.reloadData()
             } else {
                 dispatch_async(dispatch_get_main_queue(), {
-                    print("in CollectionVC images: \(images)")
+//                    print("in CollectionVC images: \(images)")
                     self.images = images
                     self.collectionView?.reloadData()
                 })
@@ -53,15 +77,15 @@ class ImageCollectionViewController: UICollectionViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if let indexPath = self.collectionView?.indexPathForCell((sender as? UICollectionViewCell)!) {
             if segue.identifier == "galleryImageView" {
-                if let cell: ImageCollectionViewCell = sender as? ImageCollectionViewCell, let destinationViewController: GalleryViewController = segue.destinationViewController as? GalleryViewController {
+                if let destinationViewController: GalleryViewController = segue.destinationViewController as? GalleryViewController {
                     destinationViewController.index = indexPath.item
                     destinationViewController.networkController = networkController
                     destinationViewController.images = images
+                    destinationViewController.delegate = self
                 }
             }
         }
     }
-
 
     // MARK: UICollectionViewDataSource
 
@@ -73,80 +97,45 @@ class ImageCollectionViewController: UICollectionViewController {
         return images.count
     }
     
-    func collectionView(collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                               sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         let kWhateverHeightYouWant = ((UIApplication.sharedApplication().keyWindow?.frame.width)! / 3) - 4
         return CGSizeMake(CGFloat(kWhateverHeightYouWant), CGFloat(kWhateverHeightYouWant))
     }
 
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(kReuseIdentifier, forIndexPath: indexPath) as! ImageCollectionViewCell
+        
     
         // Configure the cell
         // tag the cell with indexPath.item
-        
         cell.tag = indexPath.item
         
         if let thumb = self.images[indexPath.item].thumb {
-            print("thumb: \(thumb)")
+            cell.activityIndicator.stopAnimating()
             cell.imageView.image = thumb
         }
-//        else {
-//            networkController?.load(images[indexPath.item], onCompletion: { (image, thumbnail) in
-//                print("isMainThread: \(NSThread.isMainThread())")
-//                dispatch_async(dispatch_get_main_queue(), {
-//                    cell.imageView.image = thumbnail
-//                })
-//            })
-//        }
     
         return cell
     }
     
-//    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-//        if let cell = collectionView.cellForItemAtIndexPath(indexPath) {
-//            performSegueWithIdentifier("galleryImageView", sender: cell)
-//        }
-//    }
-
-
-    // MARK: UICollectionViewDelegate
-
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return false
-    }
-
-    override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
-        return false
-    }
-
-    override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
+    // MARK: GalleryViewControllerDelegate
     
+    func didDeleteImageInGalleryViewController(viewController: GalleryViewController, atIndex: Int) {
+        images.removeAtIndex(atIndex)
+        collectionView?.reloadData()
     }
-    */
-
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
 }
 
 class ImageCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet var imageView: UIImageView!
+    
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -154,12 +143,16 @@ class ImageCollectionViewCell: UICollectionViewCell {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateThumbImage), name: "thumbnailUpdateAvailable", object: nil)
     }
     
+    override func awakeFromNib() {
+        self.activityIndicator.startAnimating()
+    }
+    
     func updateThumbImage(notification: NSNotification) {
         if let userInfo = notification.userInfo as? [String: AnyObject], index = userInfo["index"] where index.integerValue == self.tag {
             if let image = notification.object as? UIImage {
                 dispatch_async(dispatch_get_main_queue(), {
-                    print("index: \(index)")
                     self.imageView.image = image
+                    self.activityIndicator.stopAnimating()
                 })
             }
         }

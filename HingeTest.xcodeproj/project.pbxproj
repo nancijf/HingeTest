@@ -10,7 +10,6 @@
 		B804DFEE1CC6FAC60014BC9E /* NetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B804DFED1CC6FAC60014BC9E /* NetworkController.swift */; };
 		B86967681CC86082006A2CEA /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86967671CC86082006A2CEA /* GalleryViewController.swift */; };
 		B88031F71CC5B44C00946861 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B88031F61CC5B44C00946861 /* AppDelegate.swift */; };
-		B88031F91CC5B44C00946861 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B88031F81CC5B44C00946861 /* ViewController.swift */; };
 		B88031FC1CC5B44C00946861 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B88031FA1CC5B44C00946861 /* Main.storyboard */; };
 		B88031FF1CC5B44C00946861 /* HingeTest.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B88031FD1CC5B44C00946861 /* HingeTest.xcdatamodeld */; };
 		B88032011CC5B44C00946861 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B88032001CC5B44C00946861 /* Assets.xcassets */; };
@@ -19,6 +18,7 @@
 		B880321A1CC5BC6E00946861 /* ImageCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B88032191CC5BC6E00946861 /* ImageCollectionViewController.swift */; };
 		B880321D1CC5C91B00946861 /* Images+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B880321B1CC5C91B00946861 /* Images+CoreDataProperties.swift */; };
 		B880321E1CC5C91B00946861 /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = B880321C1CC5C91B00946861 /* Images.swift */; };
+		B889E29D1CCA72F40041BC12 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = B889E29C1CCA72F40041BC12 /* Reachability.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +36,6 @@
 		B86967671CC86082006A2CEA /* GalleryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
 		B88031F31CC5B44B00946861 /* HingeTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HingeTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B88031F61CC5B44C00946861 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B88031F81CC5B44C00946861 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B88031FB1CC5B44C00946861 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B88031FE1CC5B44C00946861 /* HingeTest.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = HingeTest.xcdatamodel; sourceTree = "<group>"; };
 		B88032001CC5B44C00946861 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -48,6 +47,7 @@
 		B88032191CC5BC6E00946861 /* ImageCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewController.swift; sourceTree = "<group>"; };
 		B880321B1CC5C91B00946861 /* Images+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Images+CoreDataProperties.swift"; path = "../Images+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B880321C1CC5C91B00946861 /* Images.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Images.swift; path = ../Images.swift; sourceTree = "<group>"; };
+		B889E29C1CCA72F40041BC12 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,11 +90,11 @@
 			isa = PBXGroup;
 			children = (
 				B88031F61CC5B44C00946861 /* AppDelegate.swift */,
-				B88031F81CC5B44C00946861 /* ViewController.swift */,
 				B88032191CC5BC6E00946861 /* ImageCollectionViewController.swift */,
 				B86967671CC86082006A2CEA /* GalleryViewController.swift */,
 				B804DFED1CC6FAC60014BC9E /* NetworkController.swift */,
 				B88031FA1CC5B44C00946861 /* Main.storyboard */,
+				B889E29C1CCA72F40041BC12 /* Reachability.swift */,
 				B88032001CC5B44C00946861 /* Assets.xcassets */,
 				B88032021CC5B44C00946861 /* LaunchScreen.storyboard */,
 				B88032051CC5B44C00946861 /* Info.plist */,
@@ -164,6 +164,7 @@
 				TargetAttributes = {
 					B88031F21CC5B44B00946861 = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = KD7N7R2FNY;
 					};
 					B88032091CC5B44C00946861 = {
 						CreatedOnToolsVersion = 7.3;
@@ -219,7 +220,7 @@
 				B880321E1CC5C91B00946861 /* Images.swift in Sources */,
 				B88031FF1CC5B44C00946861 /* HingeTest.xcdatamodeld in Sources */,
 				B880321D1CC5C91B00946861 /* Images+CoreDataProperties.swift in Sources */,
-				B88031F91CC5B44C00946861 /* ViewController.swift in Sources */,
+				B889E29D1CCA72F40041BC12 /* Reachability.swift in Sources */,
 				B86967681CC86082006A2CEA /* GalleryViewController.swift in Sources */,
 				B804DFEE1CC6FAC60014BC9E /* NetworkController.swift in Sources */,
 				B88031F71CC5B44C00946861 /* AppDelegate.swift in Sources */,
@@ -351,6 +352,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = HingeTest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nancifrank.HingeTest;
@@ -362,6 +364,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = HingeTest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nancifrank.HingeTest;

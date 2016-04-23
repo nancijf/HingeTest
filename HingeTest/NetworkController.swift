@@ -20,16 +20,28 @@ class NetworkController: NSObject {
     typealias ImageBlock = (image: UIImage?, thumbnail: UIImage?) -> ()
     
     var managedObjectContext: NSManagedObjectContext?
+    var reachability: Reachability?
+    var isNetworkAvailable: Bool = false
+    var myPersistentStoreCoordinator: NSPersistentStoreCoordinator?
     
     lazy var imageCache: NSCache = {
         return NSCache()
     }()
     
-    lazy var thumbCache: NSCache = {
-        return NSCache()
-    }()
+//    lazy var thumbCache: NSCache = {
+//        return NSCache()
+//    }()
+    
+    override init() {
+        super.init()
+        setupReachability(hostName: "hinge-homework.s3.amazonaws.com")
+//        self.isNetworkAvailable = isConnectedToNetwork()
+        startNotifier()
+    }
     
     func loadImageData(onSuccess: SuccessBlock, onError: ErrorBlock) {
+        
+        // Check the DataStore. If no images returned get data from the network
         let imageArray = loadImageDataFromDataStore()
         if imageArray.count == 0 {
             loadImageDataFromNetwork(onSuccess, onError: onError)
@@ -42,6 +54,10 @@ class NetworkController: NSObject {
     func loadImageDataFromNetwork(onSuccess: SuccessBlock, onError: ErrorBlock) {
         var images = [Images]()
         
+        guard isNetworkAvailable else {
+            NSNotificationCenter.defaultCenter().postNotificationName("com.nancifrank.NetworkIsDown", object: nil)
+            return
+        }
         let url = NSURL(string: "https://hinge-homework.s3.amazonaws.com/client/services/homework.json")
         guard let requestURL = url else { abort() }
         let session = NSURLSession.sharedSession()
@@ -77,7 +93,6 @@ class NetworkController: NSObject {
         } catch {
             print(error)
         }
-        
     }
     
     func load(image: Images, onCompletion: ImageBlock) {
@@ -87,13 +102,12 @@ class NetworkController: NSObject {
             guard let requestURL = url else { abort() }
             let session = NSURLSession.sharedSession()
             session.dataTaskWithURL(requestURL, completionHandler: {imageData, response, error -> Void in
-//                print(response)
                 if let httpResponse = response as? NSHTTPURLResponse {
-                    print("response code: \(httpResponse.statusCode)")
+//                    print("response code: \(httpResponse.statusCode)")
+                    // Check that successfully received data - response code 200
                     if imageData?.length > 0 && httpResponse.statusCode == 200 {
                         var photoDict = [String: UIImage]()
                         if let photo: UIImage = UIImage(data: imageData!) {
-                            print("image is fine")
                             photoDict[kImageKey] = photo
                             photoDict[kThumbKey] = self.scaledImageFor(photo, maxSize: 300)
                             self.imageCache.setObject(photoDict, forKey: image.url!)
@@ -139,15 +153,11 @@ class NetworkController: NSObject {
         }
         
         return images
-        
     }
     
     func imageFromDictionary(dictionary: [String: String]) -> Images? {
         
         if let imageObj = NSEntityDescription.insertNewObjectForEntityForName("Images", inManagedObjectContext: self.managedObjectContext!) as? Images {
-            print("Name: \(dictionary["imageName"])")
-            print("URL: \(dictionary["imageURL"])")
-            print("Description: \(dictionary["imageDescription"])")
             
             imageObj.name = dictionary["imageName"]
             imageObj.imagedesc = dictionary["imageDescription"]
@@ -159,7 +169,6 @@ class NetworkController: NSObject {
             } catch {
                 abort()
             }
-            
         }
         
         return nil
@@ -179,6 +188,16 @@ class NetworkController: NSObject {
         }
     }
     
+    func deleteAllObjects() {
+        let fetchRequest = NSFetchRequest(entityName: "Images")
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        do {
+            try myPersistentStoreCoordinator?.executeRequest(deleteRequest, withContext: self.managedObjectContext!)
+        } catch let error as NSError {
+            print("an error occured \(error.localizedDescription)")
+        }
+    }
+    
     func fetchedResultsController(entityName: String, sortDescriptors: [NSSortDescriptor]? = nil, predicate: NSPredicate? = nil) -> NSFetchedResultsController? {
         
         var fetchedResultsController: NSFetchedResultsController?
@@ -187,11 +206,7 @@ class NetworkController: NSObject {
         // Edit the entity name as appropriate.
         let entity = NSEntityDescription.entityForName(entityName, inManagedObjectContext: self.managedObjectContext!)
         fetchRequest.entity = entity
-        
-        // Set the batch size to a suitable number.
-//        fetchRequest.fetchBatchSize = 20
         fetchRequest.sortDescriptors = []
-//        fetchRequest.predicate = predicate
         
         if let aFetchedResultsController: NSFetchedResultsController? = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedObjectContext!, sectionNameKeyPath: nil, cacheName: nil) {
             fetchedResultsController = aFetchedResultsController
@@ -204,7 +219,66 @@ class NetworkController: NSObject {
         
         return fetchedResultsController
     }
+    
+    func isConnectedToNetwork() -> Bool {
+        guard let isReachable = self.reachability?.isReachable() else {
+            print("self.reachability is nil")
+            return false
+        }
+        
+        return isReachable
+        //return hostIsReachable("api.flickr.com")
+    }
+    
+    func setupReachability(hostName hostName: String?) {
+        
+        print("--- set up with host name: \(hostName!)")
+        
+        do {
+            let reachability = try hostName == nil ? Reachability.reachabilityForInternetConnection() : Reachability(hostname: hostName!)
+            self.reachability = reachability
+        } catch ReachabilityError.FailedToCreateWithAddress(_) {
+            print("network connection is not available")
+            self.isNetworkAvailable = false
+            return
+        } catch {}
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(reachabilityChanged(_:)), name: ReachabilityChangedNotification, object: reachability)
 
+    }
+    
+    func startNotifier() {
+        print("--- start notifier")
+        do {
+            try reachability?.startNotifier()
+        } catch {
+            self.isNetworkAvailable = false
+            return
+        }
+    }
+    
+    func stopNotifier() {
+        print("--- stop notifier")
+        reachability?.stopNotifier()
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: ReachabilityChangedNotification, object: nil)
+        reachability = nil
+    }
+
+    
+    func reachabilityChanged(note: NSNotification) {
+        if let reachability = note.object as? Reachability {
+            if reachability.isReachable() {
+                self.isNetworkAvailable = true
+            } else {
+                self.isNetworkAvailable = false
+            }
+        }
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        stopNotifier()
+    }
 
 }
 
