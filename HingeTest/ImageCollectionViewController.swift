@@ -36,6 +36,8 @@ class ImageCollectionViewController: UICollectionViewController, GalleryViewCont
     
     func refreshData(refreshControl: UIRefreshControl) {
         if let networkAvailable = networkController?.isNetworkAvailable where networkAvailable {
+            self.images.removeAll()
+            collectionView?.reloadData()
             networkController?.deleteAllObjects()
             loadData()
         }
@@ -112,6 +114,7 @@ class ImageCollectionViewController: UICollectionViewController, GalleryViewCont
             cell.imageView.image = thumb
         } else {
             cell.imageView.image = UIImage(named: "ImageLoading")
+            cell.activityIndicator.startAnimating()
             cell.isLoading = true
         }
     
@@ -164,11 +167,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
         super.init(coder: aDecoder)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateThumbImage), name: kThumbnalLoadedNotificationName, object: nil)
-    }
-    
-    override func awakeFromNib() {
-        self.activityIndicator.color = UIColor.blackColor()
-        self.activityIndicator.startAnimating()
     }
     
     // Run function when receive Notification image is finished downloading

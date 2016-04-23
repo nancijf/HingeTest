@@ -20,7 +20,6 @@ class NetworkController: NSObject {
     var managedObjectContext: NSManagedObjectContext?
     var reachability: Reachability?
     var isNetworkAvailable: Bool = false
-    var myPersistentStoreCoordinator: NSPersistentStoreCoordinator?
     
     lazy var imageCache: NSCache = {
         return NSCache()
@@ -112,10 +111,10 @@ class NetworkController: NSObject {
         onCompletion(image: photoDict[kImageKey], thumbnail: photoDict[kThumbKey])
     }
     
-    func scaledImageFor(photo: UIImage, maxSize: CGFloat) -> UIImage {
+    func scaledImageFor(photo: UIImage, maxSize: CGFloat = 300) -> UIImage {
         let size = photo.size
         let maxEdge = max(size.height, size.width)
-        let scale = 300 / maxEdge
+        let scale = maxSize / maxEdge
         let scaledSize = CGSize(width: size.width * scale, height: size.height * scale)
         let rect = CGRect(origin: CGPointZero, size: scaledSize)
         
@@ -166,7 +165,8 @@ class NetworkController: NSObject {
         let fetchRequest = NSFetchRequest(entityName: "Images")
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         do {
-            try myPersistentStoreCoordinator?.executeRequest(deleteRequest, withContext: self.managedObjectContext!)
+            try managedObjectContext!.executeRequest(deleteRequest)
+            saveCoreData()
         } catch let error as NSError {
             print("an error occured \(error.localizedDescription)")
         }
@@ -188,7 +188,8 @@ class NetworkController: NSObject {
         // Edit the entity name as appropriate.
         let entity = NSEntityDescription.entityForName(entityName, inManagedObjectContext: self.managedObjectContext!)
         fetchRequest.entity = entity
-        fetchRequest.sortDescriptors = []
+        fetchRequest.sortDescriptors = sortDescriptors ?? []
+        fetchRequest.predicate = predicate
         
         if let aFetchedResultsController: NSFetchedResultsController? = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedObjectContext!, sectionNameKeyPath: nil, cacheName: nil) {
             fetchedResultsController = aFetchedResultsController
