@@ -1,7 +1,6 @@
 # HingeTest
-App for Hinge Coding Test
 
-Currently tested for iOS 9.3 on iPhone 5, 6, 6 Plus, 6s, 6s Plus
+Currently tested for iOS 9.3 on iPhone 5, 6, 6+, 6s, 6s+
 
 CollectionView
 * Displays thumbnails of all the images downloaded from the API endpoint above.
@@ -17,3 +16,6 @@ GalleryView
 * Includes a button to delete image - only available when Pause animation
 * Includes Tap Gesture to Pause animation and activate Delete 
 
+Frameworks
+- [Reachability.swift](https://github.com/ashleymills/Reachability.swift): Checks for network availability
+- CoreData
